@@ -2165,6 +2165,11 @@ audio_io_handle_t AudioFlinger::openInput(audio_module_handle_t module,
     inHwDev = findSuitableHwDev_l(module, *pDevices);
     if (inHwDev == NULL)
         return 0;
+#ifdef STE_AUDIO
+    if (pInputClientId != NULL && *pInputClientId == AUDIO_INPUT_CLIENT_PLAYBACK) {
+        returnRecordThread = false;
+    }
+#endif
 
 #ifdef STE_AUDIO
     if (pInputClientId != NULL && *pInputClientId == AUDIO_INPUT_CLIENT_PLAYBACK) {
