@@ -1647,7 +1647,7 @@ status_t OMXCodec::setVideoOutputFormat(
         CHECK_EQ(err, (status_t)OK);
         CHECK_EQ((int)format.eCompressionFormat, (int)OMX_VIDEO_CodingUnused);
 
-#if 0
+//#if 0
         CHECK(format.eColorFormat == OMX_COLOR_FormatYUV420Planar
                || format.eColorFormat == OMX_COLOR_FormatYUV420SemiPlanar
                || format.eColorFormat == OMX_COLOR_FormatCbYCrY
@@ -1657,6 +1657,9 @@ status_t OMXCodec::setVideoOutputFormat(
 #ifdef USE_SAMSUNG_COLORFORMAT
                || format.eColorFormat == OMX_SEC_COLOR_FormatNV12TPhysicalAddress
                || format.eColorFormat == OMX_SEC_COLOR_FormatNV12Tiled
+#endif
+#ifdef STE_HARDWARE
+               || format.eColorFormat == OMX_STE_COLOR_FormatYUV420PackedSemiPlanarMB
 #endif
                );
 
@@ -1669,7 +1672,7 @@ status_t OMXCodec::setVideoOutputFormat(
         }
 #endif
 
-#endif
+//#endif
 
         int32_t colorFormat;
         if (meta->findInt32(kKeyColorFormat, &colorFormat)
