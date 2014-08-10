@@ -1050,42 +1050,6 @@ status_t AwesomePlayer::play_l() {
     return OK;
 }
 
-status_t AwesomePlayer::fallbackToSWDecoder() {
-    int64_t curTimeUs;
-    status_t err = OK;
-
-    ALOGD("copl:play_l() cannot create offload output, fallback to sw decode");
-    getPosition(&curTimeUs);
-
-    delete mAudioPlayer;
-    mAudioPlayer = NULL;
-    // if the player was started it will take care of stopping the source when destroyed
-    if (!(mFlags & AUDIOPLAYER_STARTED)) {
-        mAudioSource->stop();
-    }
-#ifdef ENABLE_AV_ENHANCEMENTS
-    // no 24-bit for fallback
-    ExtendedUtils::updateOutputBitWidth(mAudioSource->getFormat(), false);
-#endif
-    mAudioSource.clear();
-    modifyFlags((AUDIO_RUNNING | AUDIOPLAYER_STARTED), CLEAR);
-    mOffloadAudio = false;
-
-    mAudioSource = mOmxSource;
-    if (mAudioSource != NULL) {
-        if ((err = mAudioSource->start()) == OK) {
-            mSeekNotificationSent = true;
-            if (mExtractorFlags & MediaExtractor::CAN_SEEK) {
-                seekTo_l(curTimeUs);
-            }
-            createAudioPlayer_l();
-            err = startAudioPlayer_l(false);
-        }
-    }
-
-    return err;
-}
-
 void AwesomePlayer::createAudioPlayer_l()
 {
     uint32_t flags = 0;
